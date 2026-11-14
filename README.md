@@ -6,6 +6,8 @@ API REST em NestJS para estudar modelagem relacional, validação de dados e tes
 
 Implementação nova, com dados fictícios e sem integrações empresariais. Inclui API NestJS e frontend independente em HTML, CSS e JavaScript puro, servido pela mesma aplicação.
 
+O [guia de deploy no Render](docs/DEPLOY-RENDER.md) descreve o blueprint gratuito, o PostgreSQL independente, a rota `/health` e a verificação de disponibilidade.
+
 ## Abrir a interface nesta máquina (Windows)
 
 ```powershell

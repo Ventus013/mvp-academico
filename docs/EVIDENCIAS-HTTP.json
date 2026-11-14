@@ -41,6 +41,10 @@
       ]
     },
     {
+      "check": "GET /health com PostgreSQL real",
+      "passed": true
+    },
+    {
       "method": "GET",
       "route": "/api/processes",
       "status": 200,
@@ -67,7 +71,7 @@
         "description": "Dado ficticio"
       },
       "response": {
-        "id": "7cd1bbb9-f18a-439a-b1fa-6705170e7a84",
+        "id": "f0dec6da-0b7f-42ca-ad4c-c56d3a91200b",
         "sku": "E2E-CUBE",
         "name": "Cubo demonstrativo",
         "description": "Dado ficticio"
@@ -82,17 +86,17 @@
         "name": "Revisao demonstrativa"
       },
       "response": {
-        "id": "47135ca8-281b-4415-8a10-68e8cf2a5760",
+        "id": "f00bc382-e1e3-49fe-a08c-636f7990078b",
         "code": "E2E-REVIEW",
         "name": "Revisao demonstrativa"
       }
     },
     {
       "method": "GET",
-      "route": "/api/products/7cd1bbb9-f18a-439a-b1fa-6705170e7a84",
+      "route": "/api/products/f0dec6da-0b7f-42ca-ad4c-c56d3a91200b",
       "status": 200,
       "response": {
-        "id": "7cd1bbb9-f18a-439a-b1fa-6705170e7a84",
+        "id": "f0dec6da-0b7f-42ca-ad4c-c56d3a91200b",
         "sku": "E2E-CUBE",
         "name": "Cubo demonstrativo",
         "description": "Dado ficticio"
@@ -100,34 +104,34 @@
     },
     {
       "method": "GET",
-      "route": "/api/processes/47135ca8-281b-4415-8a10-68e8cf2a5760",
+      "route": "/api/processes/f00bc382-e1e3-49fe-a08c-636f7990078b",
       "status": 200,
       "response": {
-        "id": "47135ca8-281b-4415-8a10-68e8cf2a5760",
+        "id": "f00bc382-e1e3-49fe-a08c-636f7990078b",
         "code": "E2E-REVIEW",
         "name": "Revisao demonstrativa"
       }
     },
     {
       "method": "POST",
-      "route": "/api/products/7cd1bbb9-f18a-439a-b1fa-6705170e7a84/processes/47135ca8-281b-4415-8a10-68e8cf2a5760",
+      "route": "/api/products/f0dec6da-0b7f-42ca-ad4c-c56d3a91200b/processes/f00bc382-e1e3-49fe-a08c-636f7990078b",
       "status": 201,
       "request": {
         "position": 1
       },
       "response": {
-        "product_id": "7cd1bbb9-f18a-439a-b1fa-6705170e7a84",
-        "process_id": "47135ca8-281b-4415-8a10-68e8cf2a5760",
+        "product_id": "f0dec6da-0b7f-42ca-ad4c-c56d3a91200b",
+        "process_id": "f00bc382-e1e3-49fe-a08c-636f7990078b",
         "position": 1
       }
     },
     {
       "method": "GET",
-      "route": "/api/products/7cd1bbb9-f18a-439a-b1fa-6705170e7a84/processes",
+      "route": "/api/products/f0dec6da-0b7f-42ca-ad4c-c56d3a91200b/processes",
       "status": 200,
       "response": [
         {
-          "id": "47135ca8-281b-4415-8a10-68e8cf2a5760",
+          "id": "f00bc382-e1e3-49fe-a08c-636f7990078b",
           "code": "E2E-REVIEW",
           "name": "Revisao demonstrativa",
           "position": 1
@@ -177,7 +181,7 @@
     },
     {
       "method": "GET",
-      "route": "/api/products/276978d9-9c42-499d-b0fd-fe9fc931b511",
+      "route": "/api/products/334d38be-5583-47be-9b40-fe431765cfc0",
       "status": 404,
       "response": {
         "message": "Produto não encontrado.",
@@ -187,11 +191,11 @@
     },
     {
       "method": "GET",
-      "route": "/api/products/7cd1bbb9-f18a-439a-b1fa-6705170e7a84/processes",
+      "route": "/api/products/f0dec6da-0b7f-42ca-ad4c-c56d3a91200b/processes",
       "status": 200,
       "response": [
         {
-          "id": "47135ca8-281b-4415-8a10-68e8cf2a5760",
+          "id": "f00bc382-e1e3-49fe-a08c-636f7990078b",
           "code": "E2E-REVIEW",
           "name": "Revisao demonstrativa",
           "position": 1
@@ -204,22 +208,22 @@
     },
     {
       "method": "DELETE",
-      "route": "/api/products/7cd1bbb9-f18a-439a-b1fa-6705170e7a84/processes/47135ca8-281b-4415-8a10-68e8cf2a5760",
+      "route": "/api/products/f0dec6da-0b7f-42ca-ad4c-c56d3a91200b/processes/f00bc382-e1e3-49fe-a08c-636f7990078b",
       "status": 204,
       "response": null
     },
     {
       "method": "GET",
-      "route": "/api/products/7cd1bbb9-f18a-439a-b1fa-6705170e7a84/processes",
+      "route": "/api/products/f0dec6da-0b7f-42ca-ad4c-c56d3a91200b/processes",
       "status": 200,
       "response": []
     },
     {
       "method": "GET",
-      "route": "/api/products/7cd1bbb9-f18a-439a-b1fa-6705170e7a84",
+      "route": "/api/products/f0dec6da-0b7f-42ca-ad4c-c56d3a91200b",
       "status": 200,
       "response": {
-        "id": "7cd1bbb9-f18a-439a-b1fa-6705170e7a84",
+        "id": "f0dec6da-0b7f-42ca-ad4c-c56d3a91200b",
         "sku": "E2E-CUBE",
         "name": "Cubo demonstrativo",
         "description": "Dado ficticio"
@@ -227,17 +231,17 @@
     },
     {
       "method": "GET",
-      "route": "/api/processes/47135ca8-281b-4415-8a10-68e8cf2a5760",
+      "route": "/api/processes/f00bc382-e1e3-49fe-a08c-636f7990078b",
       "status": 200,
       "response": {
-        "id": "47135ca8-281b-4415-8a10-68e8cf2a5760",
+        "id": "f00bc382-e1e3-49fe-a08c-636f7990078b",
         "code": "E2E-REVIEW",
         "name": "Revisao demonstrativa"
       }
     },
     {
       "method": "DELETE",
-      "route": "/api/products/7cd1bbb9-f18a-439a-b1fa-6705170e7a84/processes/47135ca8-281b-4415-8a10-68e8cf2a5760",
+      "route": "/api/products/f0dec6da-0b7f-42ca-ad4c-c56d3a91200b/processes/f00bc382-e1e3-49fe-a08c-636f7990078b",
       "status": 404,
       "response": {
         "message": "Associação não encontrada.",

@@ -49,6 +49,26 @@ describe('Catálogo HTTP + persistência SQL', () => {
   const product = () => request(app.getHttpServer()).post('/api/products').send({ sku: ' demo-a ', name: ' Bloco fictício ' });
   const createProcess = (code = 'PREP') => request(app.getHttpServer()).post('/api/processes').send({ code, name: 'Etapa fictícia' });
 
+  it('informa a saúde da aplicação e do banco sem permitir cache', async () => {
+    await request(app.getHttpServer()).get('/health')
+      .expect(200, { status: 'ok', database: 'up' })
+      .expect('Cache-Control', 'no-store')
+      .expect('X-Content-Type-Options', 'nosniff');
+  });
+  it('retorna 503 sem expor detalhes quando o banco está indisponível', async () => {
+    const query = jest.spyOn(app.get(Database), 'query')
+      .mockRejectedValueOnce(new Error('sensitive connection details'));
+    try {
+      const response = await request(app.getHttpServer()).get('/health')
+        .expect(503, { status: 'error', database: 'down' })
+        .expect('Cache-Control', 'no-store');
+      expect(response.text).not.toContain('sensitive');
+      expect(query).toHaveBeenCalledWith('SELECT 1', [], 2000);
+    } finally {
+      query.mockRestore();
+    }
+  });
+
   it('cadastra, normaliza, persiste e consulta um produto', async () => {
     const created = await product().expect(201);
     expect(created.body).toMatchObject({ sku: 'DEMO-A', name: 'Bloco fictício', description: '' });
