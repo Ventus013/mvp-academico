@@ -93,6 +93,9 @@ test('alto contraste funciona em tela móvel e com armazenamento indisponível',
   await expect(toggle).toHaveAttribute('aria-pressed', 'true');
   await expectReadable(toggle);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  for (const panel of await page.locator('#products-view .workspace-grid > .panel').all()) {
+    expect(await panel.evaluate(node => node.getBoundingClientRect().right <= innerWidth)).toBe(true);
+  }
   await expect(page.locator('#product-name')).toBeVisible();
   fs.mkdirSync('.entrega', { recursive: true });
   await page.screenshot({ path: '.entrega/alto-contraste-mobile.png', fullPage: true });

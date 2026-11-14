@@ -5,6 +5,7 @@
 
 .topbar{height:auto;min-height:77px;gap:12px;flex-wrap:wrap;padding-top:12px;padding-bottom:12px}
 .topbar-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.workspace-grid>.panel{min-width:0}
 :root.high-contrast{color-scheme:dark;--accent:#ffeb3b;--border:#fff;--muted:#fff;background:#000;color:#fff}
 :root.high-contrast body,
 :root.high-contrast body *{background-color:#000;color:#fff;border-color:#fff;box-shadow:none;text-shadow:none}
