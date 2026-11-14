@@ -106,6 +106,25 @@ describe('Catálogo HTTP + persistência SQL', () => {
     await request(app.getHttpServer()).get(`/api/processes/${randomUUID()}`).expect(404);
     await request(app.getHttpServer()).get(`/api/products/${randomUUID()}/processes`).expect(404);
   });
+  it.each(['invalido', '6ba7b810-9dad-11d1-80b4-00c04fd430c8'])(
+    'recusa identificador %s em todos os parâmetros de rota UUID v4', async invalidId => {
+      const validId = randomUUID();
+      for (const collection of ['products', 'processes']) {
+        const url = `/api/${collection}/${invalidId}`;
+        await request(app.getHttpServer()).get(url).expect(400);
+        await request(app.getHttpServer()).put(url).send(
+          collection === 'products' ? { sku: 'A', name: 'Objeto' } : { code: 'A', name: 'Etapa' },
+        ).expect(400);
+        await request(app.getHttpServer()).delete(url).expect(400);
+      }
+      await request(app.getHttpServer()).get(`/api/products/${invalidId}/processes`).expect(400);
+      for (const [productId, processId] of [[invalidId, validId], [validId, invalidId]]) {
+        const url = `/api/products/${productId}/processes/${processId}`;
+        await request(app.getHttpServer()).post(url).send({ position: 1 }).expect(400);
+        await request(app.getHttpServer()).delete(url).expect(400);
+      }
+    },
+  );
   it.each([0, -1, 1.5, '1', 10001])('recusa posição inválida %j', async position => {
     await request(app.getHttpServer()).post(`/api/products/${randomUUID()}/processes/${randomUUID()}`).send({ position }).expect(400);
   });
