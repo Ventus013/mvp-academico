@@ -154,6 +154,20 @@ describe('Catálogo HTTP + persistência SQL', () => {
     await request(app.getHttpServer()).get('/app.js').expect(200);
     await request(app.getHttpServer()).get('/styles.css').expect(200);
   });
+  it.each([
+    ['/', 200, /html/],
+    ['/app.js', 200, /javascript/],
+    ['/styles.css', 200, /css/],
+    ['/api/products', 200, /json/],
+    ['/api/products/invalido', 400, /json/],
+    [`/api/products/${randomUUID()}`, 404, /json/],
+  ] as const)('protege os cabeçalhos HTTP de %s', async (url, status, contentType) => {
+    const response = await request(app.getHttpServer()).get(url)
+      .expect(status)
+      .expect('Content-Type', contentType)
+      .expect('X-Content-Type-Options', 'nosniff');
+    expect(response.headers).not.toHaveProperty('x-powered-by');
+  });
   it('edita produto e processo e mantém os vínculos', async () => {
     const p = (await product()).body; const step = (await createProcess()).body;
     await request(app.getHttpServer()).post(`/api/products/${p.id}/processes/${step.id}`).send({ position: 1 }).expect(201);
