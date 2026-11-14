@@ -57,7 +57,7 @@ Ao final, a API e o PostgreSQL criados pelo script foram encerrados e o arquivo 
 4. A instalação emitiu aviso de depreciação de `glob@10.5.0`, dependência transitiva de ferramentas de teste. Não foi realizada auditoria completa de vulnerabilidades; revisar dependências antes de eventual implantação.
 5. A verificação textual é limitada aos padrões pesquisados e não constitui certificação jurídica ou garantia absoluta de ausência de qualquer informação sensível. Os arquivos foram escritos de novo e não utilizaram os dados ou credenciais do sistema anterior.
 
-Edição/exclusão de produtos e processos, autenticação, interface gráfica, documentação OpenAPI, implantação e métricas ficaram fora do escopo pedido. Não é necessário acrescentá-los para demonstrar o cadastro e a associação no MVP local. A API não deve ser exposta na internet sem os controles apropriados.
+A ampliação local descrita em `FRONTEND.md` acrescenta interface gráfica e edição/exclusão de produtos e processos. O restante deste relatório registra a validação do primeiro MVP; os resultados atualizados são 26 testes Jest e 3 cenários Playwright, cobertura de linhas da API 91,84%, tipos e compilação aprovados. Autenticação, documentação OpenAPI, implantação e métricas continuam fora do escopo. A aplicação não deve ser exposta na internet sem os controles apropriados. O CI remoto do primeiro MVP não comprova a ampliação; consulte a execução correspondente ao commit do frontend na aba Actions.
 
 ## Preservação e proveniência
 

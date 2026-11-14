@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ESC · Catálogo acadêmico</title>
+  <link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="ESC, início"><span class="brand-mark">E.</span><span>ESC<span class="brand-sub">CATÁLOGO ACADÊMICO</span></span></a>
+    <p class="nav-caption">ESPAÇO DE TRABALHO</p>
+    <nav aria-label="Navegação principal">
+      <button class="nav-button active" data-view="products" aria-current="page"><span aria-hidden="true">▧</span> Produtos</button>
+      <button class="nav-button" data-view="processes"><span aria-hidden="true">◈</span> Processos</button>
+      <button class="nav-button" data-view="associations"><span aria-hidden="true">⇄</span> Associações</button>
+    </nav>
+    <div class="sidebar-note"><span class="demo-dot"></span> Ambiente acadêmico<p>Ideias simples.<br>Processos bem organizados.</p><small>Somente dados demonstrativos.</small></div>
+  </aside>
+  <main>
+    <header class="topbar"><span>Workspace <span class="breadcrumb">/ Catálogo</span></span><span class="workspace-badge">DEMONSTRAÇÃO LOCAL</span></header>
+    <div class="content">
+      <div class="intro"><div><p class="eyebrow">ORGANIZAÇÃO QUE FAZ SENTIDO</p><h1 id="page-title">Seu catálogo, em ordem.</h1><p id="page-description">Cadastre produtos e conecte as etapas que dão forma a cada um.</p></div><button id="refresh" class="button secondary">↻ Atualizar</button></div>
+      <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+      <div class="stats" aria-label="Resumo do catálogo"><div><span>Produtos no catálogo</span><strong id="product-count">—</strong><small>Objetos e ideias cadastrados</small></div><div><span>Processos disponíveis</span><strong id="process-count">—</strong><small>Etapas prontas para conectar</small></div><div class="stat-tip"><span>UM PASSO DE CADA VEZ</span><p>Do produto à sequência.<br>Você define o caminho.</p></div></div>
+      <section id="products-view" class="view" aria-label="Produtos">
+        <div class="section-heading"><div><h2>Produtos</h2><p>A base do seu catálogo.</p></div><span class="pill">01 / CADASTROS</span></div>
+        <div class="workspace-grid"><section class="panel form-panel"><h3 id="product-form-title">Novo produto</h3><p class="muted">Dê um nome e um código à sua ideia.</p><form id="product-form"><input name="id" type="hidden"><label for="product-sku">Código SKU</label><input id="product-sku" name="sku" required maxlength="40" pattern="[A-Za-z0-9_-]+" placeholder="Ex.: OBJETO-001"><small>Letras, números, hífen ou sublinhado.</small><label for="product-name">Nome do produto</label><input id="product-name" name="name" required maxlength="120" placeholder="Ex.: Caixa organizadora"><label for="product-description">Descrição <span class="optional">opcional</span></label><textarea id="product-description" name="description" maxlength="1000" rows="3" placeholder="O que torna esse produto especial?"></textarea><div class="form-actions"><button class="button primary" type="submit">Salvar produto</button><button class="button secondary" type="button" id="product-cancel" hidden>Cancelar</button></div></form></section>
+        <section class="panel list-panel"><div class="list-header"><h3>Seu catálogo</h3><label class="search-label" for="product-search"><span class="sr-only">Buscar produtos</span><input id="product-search" type="search" placeholder="Buscar por nome ou SKU…"></label></div><div class="table-scroll"><table><thead><tr><th>Produto</th><th>SKU</th><th>Ações</th></tr></thead><tbody id="product-rows"></tbody></table></div><p id="product-empty" class="empty" hidden>Nenhum produto por aqui. Comece pelo formulário ao lado.</p></section></div>
+      </section>
+      <section id="processes-view" class="view" aria-label="Processos" hidden>
+        <div class="section-heading"><div><h2>Processos</h2><p>Etapas genéricas, do seu jeito.</p></div><span class="pill">02 / ETAPAS</span></div>
+        <div class="workspace-grid"><section class="panel form-panel"><h3 id="process-form-title">Novo processo</h3><p class="muted">Crie uma etapa para usar em vários produtos.</p><form id="process-form"><input name="id" type="hidden"><label for="process-code">Código do processo</label><input id="process-code" name="code" required maxlength="40" pattern="[A-Za-z0-9_-]+" placeholder="Ex.: ETAPA-001"><label for="process-name">Nome do processo</label><input id="process-name" name="name" required maxlength="120" placeholder="Ex.: Conferência"><div class="form-actions"><button class="button primary" type="submit">Salvar processo</button><button class="button secondary" type="button" id="process-cancel" hidden>Cancelar</button></div></form></section><section class="panel list-panel"><div class="list-header"><h3>Biblioteca de etapas</h3><label for="process-search"><span class="sr-only">Buscar processos</span><input id="process-search" type="search" placeholder="Buscar por nome ou código…"></label></div><div class="table-scroll"><table><thead><tr><th>Processo</th><th>Código</th><th>Ações</th></tr></thead><tbody id="process-rows"></tbody></table></div><p id="process-empty" class="empty" hidden>Nenhum processo cadastrado. Crie a primeira etapa.</p></section></div>
+      </section>
+      <section id="associations-view" class="view" aria-label="Associações" hidden>
+        <div class="section-heading"><div><h2>Conecte as etapas</h2><p>Monte uma sequência para cada produto.</p></div><span class="pill">03 / CONEXÕES</span></div>
+        <section class="panel association-picker"><label for="association-product">Escolha um produto</label><select id="association-product"><option value="">Selecione um produto</option></select></section>
+        <div class="workspace-grid"><section class="panel form-panel"><h3>Adicionar à sequência</h3><p class="muted">Cada posição é única dentro do produto.</p><form id="association-form"><label for="association-process">Processo</label><select id="association-process" required><option value="">Selecione um processo</option></select><label for="association-position">Posição na sequência</label><input id="association-position" type="number" min="1" max="10000" step="1" value="1" required><button class="button primary" type="submit">Associar processo</button></form></section><section class="panel list-panel"><div class="list-header"><h3>Sequência do produto</h3><span class="pill" id="association-total">0 etapas</span></div><ol id="association-rows" class="sequence"></ol><p id="association-empty" class="empty">Selecione um produto para ver sua sequência.</p></section></div>
+      </section>
+      <footer>ESC <span>·</span> Um projeto para aprender, criar e organizar.</footer>
+    </div>
+  </main>
+  <dialog id="confirm-dialog"><form method="dialog"><h2>Confirmar exclusão</h2><p id="confirm-text"></p><div class="form-actions"><button value="cancel" class="button secondary">Cancelar</button><button value="confirm" class="button danger">Excluir</button></div></form></dialog>
+</body>
+</html>

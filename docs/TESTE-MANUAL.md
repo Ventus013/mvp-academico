@@ -134,7 +134,7 @@ Invoke-RestMethod -Uri "$base/products/$($produto.id)" | ConvertTo-Json
 Invoke-RestMethod -Uri "$base/processes/$($processo.id)" | ConvertTo-Json
 ```
 
-O `DELETE` retorna `204 No Content`, sem JSON. A lista de vínculos fica vazia (`[]` no HTTP), mas o produto e o processo continuam disponíveis com `200 OK`. O PowerShell pode não imprimir nada ao receber um array vazio. Não existe edição nem exclusão de cadastros neste MVP.
+O `DELETE` retorna `204 No Content`, sem JSON. A lista de vínculos fica vazia (`[]` no HTTP), mas o produto e o processo continuam disponíveis com `200 OK`. O PowerShell pode não imprimir nada ao receber um array vazio. A edição e exclusão dos próprios cadastros estão disponíveis na interface e nas rotas adicionais descritas em `FRONTEND.md`.
 
 ## 7. Conferir erros esperados
 
@@ -191,7 +191,7 @@ Entradas inválidas retornam `400`, normalmente com `message` como array de mens
 | GET | `/api/products/:id/processes` | 200 | Array ordenado de processos vinculados |
 | DELETE | `/api/products/:productId/processes/:processId` | 204 | Sem corpo |
 
-Não há rota na raiz `/`, interface gráfica, login ou Swagger. Abrir apenas `http://127.0.0.1:3100` no navegador retorna `404` por design; para uma consulta simples use `http://127.0.0.1:3100/api/products`.
+A raiz `http://127.0.0.1:3100` agora abre a interface web. Veja `FRONTEND.md` para cadastrar, editar, excluir e associar processos visualmente. Login e Swagger continuam fora do escopo.
 
 ## 9. Repetir a validação isolada automatizada no Windows
 

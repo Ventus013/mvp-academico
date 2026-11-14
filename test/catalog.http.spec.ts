@@ -130,4 +130,36 @@ describe('Catálogo HTTP + persistência SQL', () => {
     expect(created.body.name).toBe(name);
     await product().expect(201);
   });
+  it('serve a interface na raiz e os arquivos estáticos', async () => {
+    await request(app.getHttpServer()).get('/').expect(200).expect('Content-Type', /html/);
+    await request(app.getHttpServer()).get('/app.js').expect(200);
+    await request(app.getHttpServer()).get('/styles.css').expect(200);
+  });
+  it('edita produto e processo e mantém os vínculos', async () => {
+    const p = (await product()).body; const step = (await createProcess()).body;
+    await request(app.getHttpServer()).post(`/api/products/${p.id}/processes/${step.id}`).send({ position: 1 }).expect(201);
+    const updated = await request(app.getHttpServer()).put(`/api/products/${p.id}`).send({ sku: 'NOVO', name: 'Produto revisado', description: 'Revisão fictícia' }).expect(200);
+    expect(updated.body.sku).toBe('NOVO');
+    await request(app.getHttpServer()).put(`/api/processes/${step.id}`).send({ code: 'REV', name: 'Etapa revisada' }).expect(200);
+    const links = await request(app.getHttpServer()).get(`/api/products/${p.id}/processes`).expect(200);
+    expect(links.body[0].name).toBe('Etapa revisada');
+  });
+  it('exclui produto com seus vínculos e preserva o processo', async () => {
+    const p = (await product()).body; const step = (await createProcess()).body;
+    await request(app.getHttpServer()).post(`/api/products/${p.id}/processes/${step.id}`).send({ position: 1 }).expect(201);
+    await request(app.getHttpServer()).delete(`/api/processes/${step.id}`).expect(409);
+    await request(app.getHttpServer()).delete(`/api/products/${p.id}`).expect(204);
+    await request(app.getHttpServer()).get(`/api/products/${p.id}`).expect(404);
+    await request(app.getHttpServer()).get(`/api/processes/${step.id}`).expect(200);
+    await request(app.getHttpServer()).delete(`/api/processes/${step.id}`).expect(204);
+    await request(app.getHttpServer()).get(`/api/processes/${step.id}`).expect(404);
+  });
+  it('valida atualizações e exclusões inexistentes', async () => {
+    const id = randomUUID();
+    await request(app.getHttpServer()).put(`/api/products/${id}`).send({ sku: 'X', name: 'Novo' }).expect(404);
+    await request(app.getHttpServer()).put(`/api/processes/${id}`).send({ code: 'X', name: 'Novo' }).expect(404);
+    await request(app.getHttpServer()).delete(`/api/products/${id}`).expect(404);
+    await request(app.getHttpServer()).delete(`/api/processes/${id}`).expect(404);
+    await request(app.getHttpServer()).put(`/api/products/${id}`).send({ sku: 'X', name: '' }).expect(400);
+  });
 });

@@ -4,12 +4,25 @@ Repositório: [Ventus013/mvp-academico](https://github.com/Ventus013/mvp-academi
 
 API REST em NestJS para estudar modelagem relacional, validação de dados e testes automatizados. O domínio é propositalmente pequeno: cadastrar produtos e processos genéricos e relacioná-los em uma ordem definida pelo usuário.
 
-Implementação nova, com dados fictícios e sem integrações empresariais. Este repositório contém somente o backend; a API pode ser demonstrada com um cliente HTTP.
+Implementação nova, com dados fictícios e sem integrações empresariais. Inclui API NestJS e frontend independente em HTML, CSS e JavaScript puro, servido pela mesma aplicação.
+
+## Abrir a interface nesta máquina (Windows)
+
+```powershell
+npm.cmd run demo
+```
+
+Abra **http://127.0.0.1:3100**. O comando compila, prepara um PostgreSQL temporário exclusivo com dados fictícios e mantém a interface e a API disponíveis até `Ctrl+C`. Nesta máquina os binários portáteis já estão preparados. Cada execução de demonstração cria um banco novo; para preservar cadastros entre execuções, use o PostgreSQL persistente do Compose abaixo.
+
+Veja o [guia do frontend](docs/FRONTEND.md) para as telas, regras de edição/exclusão e resultados dos testes de navegador.
+
+Em outro Windows, prepare uma vez os binários públicos: `npm.cmd install --prefix .validation-tools --no-save @embedded-postgres/windows-x64@17.11.0-beta.19 --no-audit --no-fund --cache .npm-cache`. As dependências normais devem ser instaladas com `npm ci` antes disso. Não é necessário Docker para esse modo.
 
 ## Funcionalidades
 
 - Criar e consultar produtos com SKU único, nome e descrição opcional.
 - Criar e consultar processos com código único e nome.
+- Editar e excluir produtos e processos pela interface. Produtos excluídos perdem os vínculos; processos em uso têm exclusão bloqueada.
 - Associar vários processos a um produto e compartilhar um processo entre produtos.
 - Consultar as associações ordenadas e remover um vínculo sem excluir os cadastros.
 - Validar entradas, limitar consultas e manter integridade referencial no PostgreSQL.
@@ -22,6 +35,7 @@ Node.js 22+, TypeScript, NestJS, PostgreSQL 17, driver `pg`, Jest e Supertest. S
 
 ```text
 src/           API, validação, serviço de catálogo e acesso ao banco
+public/        interface nova, responsiva, sem framework ou CDN
 migrations/    evolução explícita do esquema SQL
 scripts/       migração e dados demonstrativos
 test/          testes HTTP com persistência SQL
@@ -101,6 +115,10 @@ Para parar o banco sem apagar dados: `docker compose stop`. O volume local é pe
 | POST | `/api/processes` | Cria processo |
 | GET | `/api/processes?limit=20&offset=0` | Lista processos por código |
 | GET | `/api/processes/:id` | Consulta um processo |
+| PUT | `/api/products/:id` | Atualiza SKU, nome e descrição |
+| DELETE | `/api/products/:id` | Exclui produto e seus vínculos |
+| PUT | `/api/processes/:id` | Atualiza código e nome |
+| DELETE | `/api/processes/:id` | Exclui processo sem vínculos; retorna 409 se estiver em uso |
 | POST | `/api/products/:productId/processes/:processId` | Cria vínculo com posição |
 | GET | `/api/products/:id/processes` | Lista processos vinculados em ordem |
 | DELETE | `/api/products/:productId/processes/:processId` | Remove somente o vínculo |
@@ -150,7 +168,7 @@ O GitHub Actions instala pelo lockfile, verifica tipos, compila, aplica a migra�
 
 ## Limites e próximos passos
 
-Este MVP cobre cadastro, consulta e vínculos; edição/exclusão de cadastros, autenticação, interface web, Swagger, observabilidade e implantação não fazem parte desta entrega. A aplicação escuta em loopback por padrão e não deve ser exposta publicamente sem controle de acesso e revisão de segurança. Não há migração de dados empresariais ou conexão automática com outros sistemas.
+Este MVP cobre cadastro, consulta, edição, exclusão e vínculos, com interface web responsiva. Autenticação, Swagger, observabilidade e implantação não fazem parte desta entrega. A aplicação escuta em loopback por padrão e não deve ser exposta publicamente sem controle de acesso e revisão de segurança. Não há migração de dados empresariais ou conexão automática com outros sistemas.
 
 O estado efetivamente verificado e as limitações de execução estão em [docs/VALIDACAO.md](docs/VALIDACAO.md). O [guia de testes manuais](docs/TESTE-MANUAL.md) cobre as nove rotas, com comandos PowerShell e exemplos de respostas. As [evidências HTTP](docs/EVIDENCIAS-HTTP.json) foram capturadas em uma execução local com PostgreSQL real isolado. A origem e as decisões de independência estão em [docs/PROVENIENCIA.md](docs/PROVENIENCIA.md).
 

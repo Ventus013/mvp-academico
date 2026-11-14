@@ -32,4 +32,4 @@ Se a plataforma exigir ZIP, usar o ZIP deste repositório no GitHub ou `git arch
 
 ## Limitações
 
-Não inclui interface gráfica, autenticação, edição/exclusão dos cadastros, documentação OpenAPI ou deploy. Docker Compose não foi executado nesta máquina; a integração local foi validada por PostgreSQL portátil. Não foram feitos testes de carga ou auditoria completa de dependências. Para executar manualmente, seguir `TESTE-MANUAL.md`.
+A versão ampliada inclui interface gráfica e edição/exclusão dos cadastros; detalhes e resultados atualizados em `FRONTEND.md`. Ainda não inclui autenticação, documentação OpenAPI ou deploy. O envio desta ampliação foi autorizado pelo usuário. Docker Compose não foi executado nesta máquina; a integração local foi validada por PostgreSQL portátil. Não foram feitos testes de carga ou auditoria completa de dependências.

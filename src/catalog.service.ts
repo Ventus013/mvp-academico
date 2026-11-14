@@ -33,6 +33,31 @@ export class CatalogService {
   async listProducts(page: PageQuery) {
     return (await this.db.query('SELECT * FROM products ORDER BY sku LIMIT $1 OFFSET $2', [page.limit, page.offset])).rows;
   }
+  async updateProduct(id: string, input: ProductInput) {
+    const result = await this.write('UPDATE products SET sku = $2, name = $3, description = $4 WHERE id = $1 RETURNING *', [id, input.sku, input.name, input.description ?? '']);
+    if (!result.rows.length) throw new NotFoundException('Produto não encontrado.');
+    return result.rows[0];
+  }
+  async updateProcess(id: string, input: ProcessInput) {
+    const result = await this.write('UPDATE production_processes SET code = $2, name = $3 WHERE id = $1 RETURNING *', [id, input.code, input.name]);
+    if (!result.rows.length) throw new NotFoundException('Processo não encontrado.');
+    return result.rows[0];
+  }
+  async deleteProduct(id: string) {
+    const result = await this.db.query('DELETE FROM products WHERE id = $1 RETURNING id', [id]);
+    if (!result.rows.length) throw new NotFoundException('Produto não encontrado.');
+  }
+  async deleteProcess(id: string) {
+    const links = await this.db.query('SELECT product_id FROM product_processes WHERE process_id = $1 LIMIT 1', [id]);
+    if (links.rows.length) throw new ConflictException('Remova as associações deste processo antes de excluí-lo.');
+    try {
+      const result = await this.db.query('DELETE FROM production_processes WHERE id = $1 RETURNING id', [id]);
+      if (!result.rows.length) throw new NotFoundException('Processo não encontrado.');
+    } catch (error: unknown) {
+      if ((error as { code?: string }).code === '23503') throw new ConflictException('O processo está associado a um produto.');
+      throw error;
+    }
+  }
   async listProcesses(page: PageQuery) {
     return (await this.db.query('SELECT * FROM production_processes ORDER BY code LIMIT $1 OFFSET $2', [page.limit, page.offset])).rows;
   }

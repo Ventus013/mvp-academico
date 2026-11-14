@@ -21,6 +21,7 @@ const password = randomBytes(24).toString('hex');
 const passwordFile = path.join(runDir, 'password.txt');
 fs.writeFileSync(passwordFile, password);
 const evidence = [];
+const serve = process.argv.includes('--serve');
 // Explicit environment: no inherited database, application or dotenv settings.
 const env = {};
 for (const key of ['PATH', 'Path', 'SystemRoot', 'SYSTEMROOT', 'WINDIR', 'COMSPEC', 'TEMP', 'TMP', 'PATHEXT', 'USERPROFILE', 'APPDATA', 'LOCALAPPDATA', 'SystemDrive']) {
@@ -56,7 +57,7 @@ async function stopApp() {
 }
 async function main() {
   const pgPort = await freePort();
-  let httpPort = await freePort();
+  let httpPort = serve ? 3100 : await freePort();
   while (httpPort === pgPort) httpPort = await freePort();
   env.PORT = String(httpPort);
   env.HOST = '127.0.0.1';
@@ -75,7 +76,7 @@ async function main() {
   node(['node_modules/ts-node/dist/bin.js', 'scripts/migrate.ts'], 'migração repetida');
   node(['node_modules/ts-node/dist/bin.js', 'scripts/seed.ts'], 'seed inicial');
   node(['node_modules/ts-node/dist/bin.js', 'scripts/seed.ts'], 'seed repetido');
-  node(['node_modules/jest/bin/jest.js', '--runInBand'], 'Jest com PostgreSQL real');
+  if (!serve) node(['node_modules/jest/bin/jest.js', '--runInBand'], 'Jest com PostgreSQL real');
   const base = `http://127.0.0.1:${httpPort}/api`;
   async function startApp() {
     app = spawn(process.execPath, ['dist/main.js'], { cwd: root, env, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
@@ -101,6 +102,14 @@ async function main() {
     return value;
   }
   await startApp();
+  if (serve) {
+    console.log(`\nFRONTEND PRONTO: http://127.0.0.1:${httpPort}\nBanco acadêmico temporário. Ctrl+C encerra a demonstração.\n`);
+    await new Promise(resolve => {
+      process.once('SIGINT', resolve); process.once('SIGTERM', resolve);
+      app.once('exit', resolve);
+    });
+    return;
+  }
   const seed = await http('GET', '/products', 200);
   assert.equal(seed.length, 1, 'Seed repetido não deve duplicar produtos.');
   assert.equal((await http('GET', '/processes', 200)).length, 2);
@@ -125,6 +134,10 @@ async function main() {
   await http('GET', `/products/${product.id}`, 200);
   await http('GET', `/processes/${step.id}`, 200);
   await http('DELETE', `/products/${product.id}/processes/${step.id}`, 404);
+  if (process.argv.includes('--browser')) {
+    env.ACADEMIC_URL = `http://127.0.0.1:${httpPort}`;
+    node(['node_modules/playwright/cli.js', 'test'], 'Frontend em navegador real');
+  }
   fs.writeFileSync(path.join(root, 'docs/EVIDENCIAS-HTTP.json'), JSON.stringify({ scope: 'academic-production-catalog only', database: 'temporary isolated PostgreSQL; generated credentials omitted', checks: evidence }, null, 2) + '\n');
   console.log('VALIDAÇÃO COMPLETA: PostgreSQL real, Jest, aplicação compilada, rotas e persistência aprovados.');
 }

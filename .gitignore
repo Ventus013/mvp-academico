@@ -3,6 +3,8 @@ node_modules/
 .validation-tools/
 .validation-data/
 .entrega/
+test-results/
+playwright-report/
 dist/
 coverage/
 .env

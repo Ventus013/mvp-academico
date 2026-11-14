@@ -4,7 +4,9 @@
   "private": true,
   "description": "API acadêmica independente para catálogo de produtos e processos genéricos",
   "license": "UNLICENSED",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/main.js",
@@ -15,7 +17,10 @@
     "test:coverage": "jest --runInBand --coverage",
     "test:postgres": "node scripts/require-test-db.cjs && jest --runInBand",
     "typecheck": "tsc --noEmit",
-    "validate:isolated": "node scripts/validate-isolated.cjs"
+    "validate:isolated": "node scripts/validate-isolated.cjs",
+    "demo": "npm run build && node scripts/validate-isolated.cjs --serve",
+    "test:ui": "npm run build && node scripts/validate-isolated.cjs --browser",
+    "test:browser": "playwright test"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",
@@ -30,6 +35,7 @@
   },
   "devDependencies": {
     "@nestjs/testing": "^11.0.0",
+    "@playwright/test": "^1.65.1",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.0.0",
