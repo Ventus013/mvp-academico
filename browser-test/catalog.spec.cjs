@@ -63,7 +63,7 @@ test('erros recuperáveis, busca, conteúdo seguro e layout desktop', async ({ p
   await page.getByLabel('Código SKU').fill('SAFE-TEXT');
   await page.getByLabel('Nome do produto').fill('Duplicado');
   await page.getByRole('button', { name: 'Salvar produto', exact: true }).click();
-  await expect(page.locator('#notice')).toContainText('já cadastrados');
+  await expect(page.locator('#notice')).toContainText('Já existe um produto com este SKU');
   await expect(page.getByLabel('Nome do produto')).toHaveValue('Duplicado');
   await page.getByLabel('Buscar produtos').fill('nenhum resultado');
   await expect(page.locator('#product-empty')).toBeVisible();
