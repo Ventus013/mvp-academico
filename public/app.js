@@ -26,7 +26,9 @@ async function api(path, method = 'GET', data) {
   try { value = await response.json(); } catch { throw new Error('A API retornou uma resposta inesperada.'); }
   if (!response.ok) {
     if (response.status >= 500) throw new Error('O serviço não conseguiu concluir a operação. Confira a conexão com o banco e tente novamente.');
-    throw new Error(Array.isArray(value.message) ? value.message.join(' · ') : value.message || 'Não foi possível concluir a operação.');
+    const error = new Error(Array.isArray(value.message) ? value.message.join(' · ') : value.message || 'Não foi possível concluir a operação.');
+    error.status = response.status;
+    throw error;
   }
   return value;
 }
@@ -70,11 +72,13 @@ function button(label, task, remove = false) {
 }
 function resetForm(kind) {
   const form = $(kind + '-form'); form.reset(); form.elements.namedItem('id').value = '';
+  clearErrors(form);
   $(kind + '-form-title').textContent = kind === 'product' ? 'Novo produto' : 'Novo processo';
   $(kind + '-cancel').hidden = true;
 }
 function edit(kind, item) {
   const form = $(kind + '-form');
+  clearErrors(form);
   for (const field of ['id', 'name', kind === 'product' ? 'sku' : 'code']) form.elements.namedItem(field).value = item[field];
   if (kind === 'product') form.elements.namedItem('description').value = item.description;
   $(kind + '-form-title').textContent = kind === 'product' ? 'Editar produto' : 'Editar processo';
@@ -172,7 +176,45 @@ async function refreshAfterSave() {
   try { await refresh(); }
   catch { notice('A alteração foi salva, mas a lista não pôde ser atualizada. Clique em Atualizar antes de repetir a operação.', true); }
 }
+function fieldError(field, message) {
+  field.setAttribute('aria-invalid', String(Boolean(message)));
+  const feedback = $(field.id + '-error');
+  feedback.textContent = message;
+  feedback.hidden = !message;
+}
+function clearErrors(form) {
+  form.querySelectorAll('[aria-invalid]').forEach(field => fieldError(field, ''));
+}
+function validateCatalog(form, data, codeField) {
+  clearErrors(form);
+  const codeLabel = codeField === 'sku' ? 'O código SKU' : 'O código do processo';
+  const errors = {};
+  if (!data[codeField]) errors[codeField] = `${codeLabel} é obrigatório.`;
+  else if (data[codeField].length > 40 || !/^[A-Z0-9_-]+$/.test(data[codeField])) {
+    errors[codeField] = `${codeLabel} deve ter até 40 caracteres e usar apenas letras, números, hífen ou sublinhado.`;
+  }
+  if (!data.name) errors.name = 'Informe um nome com pelo menos um caractere além de espaços.';
+  else if (data.name.length > 120) errors.name = 'O nome deve ter no máximo 120 caracteres.';
+  if (data.description?.length > 1000) errors.description = 'A descrição deve ter no máximo 1000 caracteres.';
+  for (const [name, message] of Object.entries(errors)) fieldError(form.elements.namedItem(name), message);
+  const first = Object.keys(errors)[0];
+  if (!first) return true;
+  notice('Revise os campos indicados antes de salvar o cadastro.', true);
+  form.elements.namedItem(first).focus();
+  return false;
+}
 for (const kind of ['product', 'process']) {
+  const form = $(kind + '-form');
+  const codeField = kind === 'product' ? 'sku' : 'code';
+  form.noValidate = true;
+  for (const name of [codeField, 'name', ...(kind === 'product' ? ['description'] : [])]) {
+    const field = form.elements.namedItem(name);
+    const feedback = element('small', '', 'notice error');
+    feedback.id = field.id + '-error'; feedback.hidden = true;
+    field.setAttribute('aria-describedby', feedback.id);
+    field.after(feedback);
+    field.addEventListener('input', () => fieldError(field, ''));
+  }
   $(kind + '-search').addEventListener('input', () => renderCatalog(kind));
   $(kind + '-cancel').addEventListener('click', () => resetForm(kind));
   $(kind + '-form').addEventListener('submit', event => {
@@ -181,7 +223,22 @@ for (const kind of ['product', 'process']) {
       const form = event.currentTarget || $(kind + '-form');
       const data = Object.fromEntries(new FormData(form));
       const id = data.id; delete data.id;
-      await api(`/${kind === 'product' ? 'products' : 'processes'}${id ? '/' + id : ''}`, id ? 'PUT' : 'POST', data);
+      for (const key of Object.keys(data)) data[key] = data[key].trim();
+      data[codeField] = data[codeField].toUpperCase();
+      if (!validateCatalog(form, data, codeField)) return;
+      try {
+        await api(`/${kind === 'product' ? 'products' : 'processes'}${id ? '/' + id : ''}`, id ? 'PUT' : 'POST', data);
+      } catch (error) {
+        if (error.status === 409) {
+          const field = form.elements.namedItem(codeField);
+          error.message = `${kind === 'product' ? 'Já existe um produto com este SKU' : 'Já existe um processo com este código'}. Use outro código ou edite o cadastro existente.`;
+          fieldError(field, error.message);
+          field.focus();
+        } else if (error.status === 400) {
+          error.message = 'A API recusou os dados do cadastro. Confira o código, o nome (até 120 caracteres) e a descrição (até 1000 caracteres) antes de tentar novamente.';
+        }
+        throw error;
+      }
       resetForm(kind); notice(id ? 'Cadastro atualizado.' : 'Cadastro criado.'); await refreshAfterSave();
     });
   });
