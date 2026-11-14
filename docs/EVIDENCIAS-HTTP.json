@@ -1,0 +1,249 @@
+{
+  "scope": "academic-production-catalog only",
+  "database": "temporary isolated PostgreSQL; generated credentials omitted",
+  "checks": [
+    {
+      "check": "PostgreSQL real isolado",
+      "version": "17.11",
+      "passed": true
+    },
+    {
+      "check": "migração inicial",
+      "passed": true
+    },
+    {
+      "check": "migração repetida",
+      "passed": true
+    },
+    {
+      "check": "seed inicial",
+      "passed": true
+    },
+    {
+      "check": "seed repetido",
+      "passed": true
+    },
+    {
+      "check": "Jest com PostgreSQL real",
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "route": "/api/products",
+      "status": 200,
+      "response": [
+        {
+          "id": "10000000-0000-4000-8000-000000000001",
+          "sku": "DEMO-BOX",
+          "name": "Caixa didática",
+          "description": "Objeto fictício para apresentação"
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "route": "/api/processes",
+      "status": 200,
+      "response": [
+        {
+          "id": "20000000-0000-4000-8000-000000000002",
+          "code": "DEMO-CHECK",
+          "name": "Conferência de exemplo"
+        },
+        {
+          "id": "20000000-0000-4000-8000-000000000001",
+          "code": "DEMO-PREP",
+          "name": "Preparação de exemplo"
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "route": "/api/products",
+      "status": 201,
+      "request": {
+        "sku": "E2E-CUBE",
+        "name": "Cubo demonstrativo",
+        "description": "Dado ficticio"
+      },
+      "response": {
+        "id": "099a78aa-f43f-4acb-847d-1f9774a3ded5",
+        "sku": "E2E-CUBE",
+        "name": "Cubo demonstrativo",
+        "description": "Dado ficticio"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/processes",
+      "status": 201,
+      "request": {
+        "code": "E2E-REVIEW",
+        "name": "Revisao demonstrativa"
+      },
+      "response": {
+        "id": "e33e73a3-80a2-4e8a-9bb4-c33657e55c9d",
+        "code": "E2E-REVIEW",
+        "name": "Revisao demonstrativa"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/products/099a78aa-f43f-4acb-847d-1f9774a3ded5",
+      "status": 200,
+      "response": {
+        "id": "099a78aa-f43f-4acb-847d-1f9774a3ded5",
+        "sku": "E2E-CUBE",
+        "name": "Cubo demonstrativo",
+        "description": "Dado ficticio"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/processes/e33e73a3-80a2-4e8a-9bb4-c33657e55c9d",
+      "status": 200,
+      "response": {
+        "id": "e33e73a3-80a2-4e8a-9bb4-c33657e55c9d",
+        "code": "E2E-REVIEW",
+        "name": "Revisao demonstrativa"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/products/099a78aa-f43f-4acb-847d-1f9774a3ded5/processes/e33e73a3-80a2-4e8a-9bb4-c33657e55c9d",
+      "status": 201,
+      "request": {
+        "position": 1
+      },
+      "response": {
+        "product_id": "099a78aa-f43f-4acb-847d-1f9774a3ded5",
+        "process_id": "e33e73a3-80a2-4e8a-9bb4-c33657e55c9d",
+        "position": 1
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/products/099a78aa-f43f-4acb-847d-1f9774a3ded5/processes",
+      "status": 200,
+      "response": [
+        {
+          "id": "e33e73a3-80a2-4e8a-9bb4-c33657e55c9d",
+          "code": "E2E-REVIEW",
+          "name": "Revisao demonstrativa",
+          "position": 1
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "route": "/api/products",
+      "status": 409,
+      "request": {
+        "sku": "E2E-CUBE",
+        "name": "Duplicado"
+      },
+      "response": {
+        "message": "Código, associação ou posição já cadastrados.",
+        "error": "Conflict",
+        "statusCode": 409
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/products",
+      "status": 400,
+      "request": {
+        "sku": "",
+        "name": "Invalido"
+      },
+      "response": {
+        "message": [
+          "sku must match /^[A-Z0-9_-]+$/ regular expression",
+          "sku must be longer than or equal to 1 characters"
+        ],
+        "error": "Bad Request",
+        "statusCode": 400
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/products/not-a-uuid",
+      "status": 400,
+      "response": {
+        "message": "Validation failed (uuid v 4 is expected)",
+        "error": "Bad Request",
+        "statusCode": 400
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/products/90c7e09a-bbe1-4ce5-9d94-78beb14a9e3e",
+      "status": 404,
+      "response": {
+        "message": "Produto não encontrado.",
+        "error": "Not Found",
+        "statusCode": 404
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/products/099a78aa-f43f-4acb-847d-1f9774a3ded5/processes",
+      "status": 200,
+      "response": [
+        {
+          "id": "e33e73a3-80a2-4e8a-9bb4-c33657e55c9d",
+          "code": "E2E-REVIEW",
+          "name": "Revisao demonstrativa",
+          "position": 1
+        }
+      ]
+    },
+    {
+      "check": "persistência após reiniciar aplicação compilada",
+      "passed": true
+    },
+    {
+      "method": "DELETE",
+      "route": "/api/products/099a78aa-f43f-4acb-847d-1f9774a3ded5/processes/e33e73a3-80a2-4e8a-9bb4-c33657e55c9d",
+      "status": 204,
+      "response": null
+    },
+    {
+      "method": "GET",
+      "route": "/api/products/099a78aa-f43f-4acb-847d-1f9774a3ded5/processes",
+      "status": 200,
+      "response": []
+    },
+    {
+      "method": "GET",
+      "route": "/api/products/099a78aa-f43f-4acb-847d-1f9774a3ded5",
+      "status": 200,
+      "response": {
+        "id": "099a78aa-f43f-4acb-847d-1f9774a3ded5",
+        "sku": "E2E-CUBE",
+        "name": "Cubo demonstrativo",
+        "description": "Dado ficticio"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/processes/e33e73a3-80a2-4e8a-9bb4-c33657e55c9d",
+      "status": 200,
+      "response": {
+        "id": "e33e73a3-80a2-4e8a-9bb4-c33657e55c9d",
+        "code": "E2E-REVIEW",
+        "name": "Revisao demonstrativa"
+      }
+    },
+    {
+      "method": "DELETE",
+      "route": "/api/products/099a78aa-f43f-4acb-847d-1f9774a3ded5/processes/e33e73a3-80a2-4e8a-9bb4-c33657e55c9d",
+      "status": 404,
+      "response": {
+        "message": "Associação não encontrada.",
+        "error": "Not Found",
+        "statusCode": 404
+      }
+    }
+  ]
+}

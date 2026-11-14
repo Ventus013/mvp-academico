@@ -1,0 +1,14 @@
+node_modules/
+.npm-cache/
+.validation-tools/
+.validation-data/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
+*.tsbuildinfo
+.idea/
+.vscode/
+.DS_Store
