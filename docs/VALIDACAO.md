@@ -15,7 +15,7 @@ Data: 14/11/2026.
 - Jest + Supertest, adaptador SQL em memória e opção de executar a mesma suíte com servidor PostgreSQL real.
 - GitHub Actions com PostgreSQL 17, verificação de tipos, compilação, migração/seed repetidos e testes nas duas modalidades.
 - README com modelo relacional, endpoints, comandos de execução, exemplos e limites do escopo.
-- Repositório Git local vazio, sem histórico anterior e sem remote.
+- Repositório Git independente em `main`, com primeiro commit `1b4d8cf83e7a008e790781e4de0be5b59f1e91ff`, enviado exclusivamente a `Ventus013/mvp-academico`.
 
 ## Verificações executadas
 
@@ -35,7 +35,7 @@ Data: 14/11/2026.
 | `.gitignore` | Confirmado para `.env`, `node_modules`, `.npm-cache` e `dist`; coverage também está ignorado |
 | Referências e padrões sensíveis selecionados no código/configuração/documentação próprios | Nenhuma correspondência aos nomes corporativos/pessoais buscados, seletores antigos, catálogo de máquinas, configuração SMTP ou formatos conhecidos de chave/token pesquisados |
 | Estado do repositório pai | Sem modificação de arquivo rastreado; somente pastas/scripts locais não rastreados já existentes e o diretório novo |
-| Remote/publicação | Nenhum remote configurado; nenhum commit, push ou publicação executado |
+| Remote/publicação acadêmica | `https://github.com/Ventus013/mvp-academico`; primeiro commit enviado com autorização do usuário; nenhum arquivo ou histórico do projeto anterior foi publicado |
 
 Os testes foram executados com a aplicação NestJS e requisições HTTP reais em servidor de teste, tanto com persistência SQL em memória quanto com PostgreSQL real. Cobrem normalização, unicidade, campos inválidos, referências ausentes, UUID inválido, ordenação, compartilhamento de processos, posição ocupada, desvinculação, paginação e texto com aparência de SQL tratado como dado. A aplicação compilada também foi executada em um processo próprio, sem mocks do driver, e recebeu requisições HTTP para todas as suas rotas.
 
@@ -52,7 +52,7 @@ Ao final, a API e o PostgreSQL criados pelo script foram encerrados e o arquivo 
 ## Pendências de validação e limitações
 
 1. **PostgreSQL real validado por binários portáteis.** Docker e um serviço PostgreSQL não estavam disponíveis; o fluxo foi verificado com cluster temporário 17.11. O arquivo Compose permanece sem execução local. Não foram feitos testes de carga, concorrência ou recuperação de falhas de infraestrutura.
-2. **GitHub Actions ainda não foi executado remotamente.** O workflow está preparado, mas não houve publicação ou conexão com GitHub. Não é apresentado como CI já aprovado.
+2. **GitHub Actions aprovado após publicação autorizada.** A primeira execução `43595096102` terminou com `success`; evidência e link estão no relatório `ENTREGA.md`. O resultado de uma execução não garante aprovações futuras.
 3. **Licença pública ainda não escolhida pelo responsável.** O pacote está como `UNLICENSED`; nenhuma licença do projeto anterior foi transferida. As dependências mantêm suas próprias licenças.
 4. A instalação emitiu aviso de depreciação de `glob@10.5.0`, dependência transitiva de ferramentas de teste. Não foi realizada auditoria completa de vulnerabilidades; revisar dependências antes de eventual implantação.
 5. A verificação textual é limitada aos padrões pesquisados e não constitui certificação jurídica ou garantia absoluta de ausência de qualquer informação sensível. Os arquivos foram escritos de novo e não utilizaram os dados ou credenciais do sistema anterior.
@@ -63,4 +63,4 @@ Edição/exclusão de produtos e processos, autenticação, interface gráfica, 
 
 Não foram consultados novamente arquivos de implementação do sistema anterior para produzir esta entrega; o problema foi delimitado pelo enunciado do usuário. Nenhum arquivo original foi alterado e nenhuma dependência instalada anteriormente foi reutilizada. Veja `PROVENIENCIA.md` para os limites da afirmação de independência, incluindo o contato do assistente com o sistema anterior em etapas anteriores da conversa.
 
-Antes de publicar, revisar somente os arquivos próprios deste diretório, excluindo dependências instaladas, cache, builds, cobertura e qualquer `.env` local. A autorização de publicação continua pendente e não foi solicitada nem presumida nesta etapa.
+A publicação acadêmica foi autorizada pelo usuário ao solicitar o novo repositório e fornecer o endereço de destino. Somente os arquivos próprios revisados deste diretório foram versionados; dependências instaladas, cache, builds, cobertura, banco temporário e qualquer `.env` local ficaram fora do envio.

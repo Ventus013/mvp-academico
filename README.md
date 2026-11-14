@@ -146,7 +146,7 @@ Remove-Item Env:TEST_DATABASE_URL
 
 A suíte cria um schema aleatório, aplica o SQL nele e remove somente esse schema ao finalizar. Não depende dos dados de demonstração. O comando `test:postgres` recusa ausência de configuração e nomes de banco sem o sufixo de teste.
 
-O GitHub Actions instala pelo lockfile, verifica tipos, compila, aplica a migração e o seed duas vezes, executa os testes com PostgreSQL 17 e repete a suíte em memória. Credenciais de CI são fictícias e limitadas ao serviço temporário. O workflow foi preparado localmente; ele só terá resultado remoto após uma publicação autorizada e execução no GitHub.
+O GitHub Actions instala pelo lockfile, verifica tipos, compila, aplica a migração e o seed duas vezes, executa os testes com PostgreSQL 17 e repete a suíte em memória. Credenciais de CI são fictícias e limitadas ao serviço temporário. A [primeira execução remota](https://github.com/Ventus013/mvp-academico/actions/runs/43595096102) foi concluída com sucesso para o commit `1b4d8cf`.
 
 ## Limites e próximos passos
 

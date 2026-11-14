@@ -10,8 +10,8 @@ API acadêmica nova em NestJS para cadastrar produtos, cadastrar processos gené
 - `npm run build`: aprovado.
 - `npm test -- --coverage`: 22 testes aprovados; cobertura de linhas de 90,78% (fontes, excluindo o bootstrap).
 - Execução isolada com PostgreSQL 17.11 real: migração e seed repetidos, Jest, aplicação compilada, nove rotas e persistência após reiniciar a API aprovados. Requisições e respostas: `EVIDENCIAS-HTTP.json`.
-- Versionamento: repositório novo com histórico próprio, branch `main`; os commits podem ser consultados pelo Git e pela aba de commits no GitHub. Não foi importado histórico de outro projeto.
-- CI: `.github/workflows/ci.yml` configura instalação pelo lockfile, tipos, build, migração, seed e testes com PostgreSQL e em memória. O estado de cada execução remota deve ser conferido na aba Actions; configuração de workflow não é evidência de aprovação remota.
+- Versionamento: repositório novo com histórico próprio, branch `main`; primeiro commit real [`1b4d8cf`](https://github.com/Ventus013/mvp-academico/commit/1b4d8cf83e7a008e790781e4de0be5b59f1e91ff), com 28 arquivos. Não foi importado histórico de outro projeto. Commits posteriores atualizam somente a documentação e a organização da entrega.
+- CI: [execução real 43595096102](https://github.com/Ventus013/mvp-academico/actions/runs/43595096102), commit `1b4d8cf`, concluída com **success** em 14/11/2026 às 09:30:27 (America/Sao_Paulo). Instalação pelo lockfile, tipos, build, migração/seed repetidos e testes com PostgreSQL e em memória passaram. O resultado foi consultado na API do GitHub; não é uma simulação local do workflow.
 - CD: não implementado. Não existe deploy ou ambiente de produção nesta atividade.
 
 ## Independência e cuidado com os arquivos

@@ -2,6 +2,7 @@ node_modules/
 .npm-cache/
 .validation-tools/
 .validation-data/
+.entrega/
 dist/
 coverage/
 .env
