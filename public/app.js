@@ -1,5 +1,17 @@
 'use strict';
 const $ = id => document.getElementById(id);
+function setHighContrast(enabled) {
+  document.documentElement.classList.toggle('high-contrast', enabled);
+  $('contrast-toggle').setAttribute('aria-pressed', String(enabled));
+  $('contrast-toggle').textContent = enabled ? 'Desativar alto contraste' : 'Ativar alto contraste';
+  try { localStorage.setItem('academic-high-contrast', String(enabled)); } catch {}
+}
+let savedHighContrast = false;
+try { savedHighContrast = localStorage.getItem('academic-high-contrast') === 'true'; } catch {}
+setHighContrast(savedHighContrast);
+$('contrast-toggle').addEventListener('click', () => {
+  setHighContrast(!document.documentElement.classList.contains('high-contrast'));
+});
 const state = { products: [], processes: [], links: [], selection: '', busy: false, request: 0 };
 function element(tag, text, className) {
   const node = document.createElement(tag);
@@ -43,7 +55,7 @@ async function all(path) {
 async function action(task) {
   if (state.busy) return;
   state.busy = true;
-  document.querySelectorAll('button:not(.nav-button), select').forEach(node => { node.disabled = true; });
+  document.querySelectorAll('button:not(.nav-button):not(#contrast-toggle), select').forEach(node => { node.disabled = true; });
   try { await task(); }
   catch (error) { notice(error.message || 'Ocorreu um erro inesperado.', true); }
   finally {

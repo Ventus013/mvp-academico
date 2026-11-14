@@ -111,6 +111,10 @@ async function main() {
     return;
   }
   const seed = await http('GET', '/products', 200);
+  const healthResponse = await fetch(`http://127.0.0.1:${httpPort}/health`, { signal: AbortSignal.timeout(5000) });
+  assert.equal(healthResponse.status, 200);
+  assert.deepEqual(await healthResponse.json(), { status: 'ok', database: 'up' });
+  evidence.push({ check: 'GET /health com PostgreSQL real', passed: true });
   assert.equal(seed.length, 1, 'Seed repetido não deve duplicar produtos.');
   assert.equal((await http('GET', '/processes', 200)).length, 2);
   const product = await http('POST', '/products', 201, { sku: 'E2E-CUBE', name: 'Cubo demonstrativo', description: 'Dado ficticio' });

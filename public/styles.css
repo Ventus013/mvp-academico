@@ -2,3 +2,36 @@
 
 /* Paleta de referência: navegação escura, superfícies neutras e destaque azul. */
 .sidebar{background:#11101d;border-color:#262238}.brand{color:#fff}.brand-sub,.nav-caption,.sidebar-note,.sidebar-note small{color:#b7b4cb}.sidebar-note p{color:#e2dfef}.nav-button{color:#e2dfef}.nav-button:hover{background:#262238;color:#fff}.nav-button.active{background:#343049;color:#fff}.demo-dot{background:#bfdbfe}
+
+.topbar{height:auto;min-height:77px;gap:12px;flex-wrap:wrap;padding-top:12px;padding-bottom:12px}
+.topbar-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.workspace-grid>.panel{min-width:0}
+:root.high-contrast{color-scheme:dark;--accent:#ffeb3b;--border:#fff;--muted:#fff;background:#000;color:#fff}
+:root.high-contrast body,
+:root.high-contrast body *{background-color:#000;color:#fff;border-color:#fff;box-shadow:none;text-shadow:none}
+:root.high-contrast button,
+:root.high-contrast button *,
+:root.high-contrast a,
+:root.high-contrast a *{color:#ffeb3b}
+:root.high-contrast button{border:1px solid #ffeb3b}
+:root.high-contrast button:hover,
+:root.high-contrast .nav-button.active,
+:root.high-contrast #contrast-toggle[aria-pressed="true"]{background:#ffeb3b;color:#000}
+:root.high-contrast button:hover *,
+:root.high-contrast .nav-button.active *{background:transparent;color:#000}
+:root.high-contrast input::placeholder,
+:root.high-contrast textarea::placeholder{color:#ddd;opacity:1}
+:root.high-contrast :focus-visible,
+:root.high-contrast input:focus,
+:root.high-contrast textarea:focus,
+:root.high-contrast select:focus{outline:3px solid #ffeb3b;outline-offset:3px}
+:root.high-contrast .notice.error,
+:root.high-contrast [aria-invalid="true"]{background:#000;border:2px solid #ffeb3b;color:#ffeb3b}
+:root.high-contrast .stats .stat-tip,
+:root.high-contrast .stats .stat-tip *{background:#000;color:#fff;border-color:#fff}
+:root.high-contrast button:disabled,
+:root.high-contrast select:disabled{opacity:1;border-style:dashed}
+:root.high-contrast .demo-dot{background:#ffeb3b}
+:root.high-contrast .stat-tip:after{display:none}
+:root.high-contrast dialog::backdrop{background:#000c}
+@media(max-width:640px){.topbar{min-height:48px}.topbar-actions{gap:8px}.topbar-actions .button{font-size:11px}}

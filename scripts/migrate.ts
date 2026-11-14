@@ -23,4 +23,4 @@ async function migrate() {
     throw error;
   } finally { client.release(); await pool.end(); }
 }
-void migrate().catch(() => { console.error('Falha na migração. Confira conexão e permissões do banco local.'); process.exitCode = 1; });
+void migrate().catch(() => { console.error('Falha na migração. Confira conexão e permissões do banco da aplicação.'); process.exitCode = 1; });

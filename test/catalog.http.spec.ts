@@ -49,6 +49,26 @@ describe('Catálogo HTTP + persistência SQL', () => {
   const product = () => request(app.getHttpServer()).post('/api/products').send({ sku: ' demo-a ', name: ' Bloco fictício ' });
   const createProcess = (code = 'PREP') => request(app.getHttpServer()).post('/api/processes').send({ code, name: 'Etapa fictícia' });
 
+  it('informa a saúde da aplicação e do banco sem permitir cache', async () => {
+    await request(app.getHttpServer()).get('/health')
+      .expect(200, { status: 'ok', database: 'up' })
+      .expect('Cache-Control', 'no-store')
+      .expect('X-Content-Type-Options', 'nosniff');
+  });
+  it('retorna 503 sem expor detalhes quando o banco está indisponível', async () => {
+    const query = jest.spyOn(app.get(Database), 'query')
+      .mockRejectedValueOnce(new Error('sensitive connection details'));
+    try {
+      const response = await request(app.getHttpServer()).get('/health')
+        .expect(503, { status: 'error', database: 'down' })
+        .expect('Cache-Control', 'no-store');
+      expect(response.text).not.toContain('sensitive');
+      expect(query).toHaveBeenCalledWith('SELECT 1', [], 2000);
+    } finally {
+      query.mockRestore();
+    }
+  });
+
   it('cadastra, normaliza, persiste e consulta um produto', async () => {
     const created = await product().expect(201);
     expect(created.body).toMatchObject({ sku: 'DEMO-A', name: 'Bloco fictício', description: '' });
@@ -106,6 +126,25 @@ describe('Catálogo HTTP + persistência SQL', () => {
     await request(app.getHttpServer()).get(`/api/processes/${randomUUID()}`).expect(404);
     await request(app.getHttpServer()).get(`/api/products/${randomUUID()}/processes`).expect(404);
   });
+  it.each(['invalido', '6ba7b810-9dad-11d1-80b4-00c04fd430c8'])(
+    'recusa identificador %s em todos os parâmetros de rota UUID v4', async invalidId => {
+      const validId = randomUUID();
+      for (const collection of ['products', 'processes']) {
+        const url = `/api/${collection}/${invalidId}`;
+        await request(app.getHttpServer()).get(url).expect(400);
+        await request(app.getHttpServer()).put(url).send(
+          collection === 'products' ? { sku: 'A', name: 'Objeto' } : { code: 'A', name: 'Etapa' },
+        ).expect(400);
+        await request(app.getHttpServer()).delete(url).expect(400);
+      }
+      await request(app.getHttpServer()).get(`/api/products/${invalidId}/processes`).expect(400);
+      for (const [productId, processId] of [[invalidId, validId], [validId, invalidId]]) {
+        const url = `/api/products/${productId}/processes/${processId}`;
+        await request(app.getHttpServer()).post(url).send({ position: 1 }).expect(400);
+        await request(app.getHttpServer()).delete(url).expect(400);
+      }
+    },
+  );
   it.each([0, -1, 1.5, '1', 10001])('recusa posição inválida %j', async position => {
     await request(app.getHttpServer()).post(`/api/products/${randomUUID()}/processes/${randomUUID()}`).send({ position }).expect(400);
   });
@@ -134,6 +173,20 @@ describe('Catálogo HTTP + persistência SQL', () => {
     await request(app.getHttpServer()).get('/').expect(200).expect('Content-Type', /html/);
     await request(app.getHttpServer()).get('/app.js').expect(200);
     await request(app.getHttpServer()).get('/styles.css').expect(200);
+  });
+  it.each([
+    ['/', 200, /html/],
+    ['/app.js', 200, /javascript/],
+    ['/styles.css', 200, /css/],
+    ['/api/products', 200, /json/],
+    ['/api/products/invalido', 400, /json/],
+    [`/api/products/${randomUUID()}`, 404, /json/],
+  ] as const)('protege os cabeçalhos HTTP de %s', async (url, status, contentType) => {
+    const response = await request(app.getHttpServer()).get(url)
+      .expect(status)
+      .expect('Content-Type', contentType)
+      .expect('X-Content-Type-Options', 'nosniff');
+    expect(response.headers).not.toHaveProperty('x-powered-by');
   });
   it('edita produto e processo e mantém os vínculos', async () => {
     const p = (await product()).body; const step = (await createProcess()).body;
